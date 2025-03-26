@@ -754,5 +754,717 @@
   </a>
   <br>
 </footer>
+  
+<title>Chat IA con Tracciamento e Assistente Vocale</title>
+    <meta name="description" content="Chatbot spirituale per disincantesimi, ClairVoyanceGPT. Protezione e purificazione dell'aura con Frederick di ClairVoyanceMedium.com. Ritrova vitalità e serenità rapidamente a un prezzo unico.">
+    <meta name="keywords" content="maledetto, incubi, ClairVoyanceGPT, disincantesimo, protezione, purificazione, pulizia energetica, chiaroveggenza, aura, energia, aiuto, sonno, rituali, spirituale">
+    <style>
+        #chat-container {
+            position: fixed;
+            display: inline-block;
+            flex-direction: column;
+            z-index: 999999;
+            font-family: Arial, sans-serif;
+            transition: transform 0.2s;
+        }
+        #chat-bubble {
+            display: flex;
+            justify-content: flex-end;
+            cursor: move;
+        }
+        #chat-toggle {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(145deg, #FFB6C1, #FF69B4);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(255,105,180,0.7);
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+            outline: none;
+        }
+        #chat-toggle:hover {
+            transform: scale(1.05);
+        }
+        #voice-toggle {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(145deg, #87CEEB, #5eb6d1);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(135,206,235,0.7);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            transition: transform 0.2s;
+            outline: none;
+        }
+        #voice-toggle:hover {
+            transform: scale(1.05);
+        }
+        #voice-toggle.disabled {
+            background: #808080;
+            box-shadow: 0 0 10px #808080;
+        }
+        #chat-box {
+            background: #111;
+            border-radius: 10px;
+            display: none;
+            flex-direction: column;
+            margin-top: 10px;
+            border: 2px solid #FF1493;
+            box-shadow: 0 0 10px #FF1493;
+            transition: all 0.3s ease;
+            max-height: 400px;
+        }
+        #chat-box.visible {
+            display: flex;
+        }
+        #chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            color: #fff;
+        }
+        #chat-messages p {
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        .bot-message {
+            text-align: left;
+            color: #fff;
+            background: rgba(255,255,255,0.05);
+            padding: 0.5rem;
+            border-radius: 5px;
+            margin-bottom: 0.8rem;
+            display: inline-block;
+            max-width: 80%;
+            border: 2px solid #FF69B4;
+            box-shadow: 0 0 8px #FF69B4;
+        }
+        .user-message {
+            text-align: right;
+            color: #ffd700;
+            margin-bottom: 0.8rem;
+            border: 2px solid #AED6F1;
+            box-shadow: 0 0 8px #AED6F1;
+            padding: 0.5rem;
+            border-radius: 5px;
+            display: inline-block;
+            max-width: 80%;
+        }
+        #chat-form {
+            display: flex;
+            border-top: 1px solid #333;
+            align-items: center;
+            padding: 0.5rem;
+        }
+        #chat-input {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            outline: none;
+            color: #333;
+            border-radius: 5px 0 0 5px;
+        }
+        #chat-send {
+            background: #87CEEB;
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 0 5px 5px 0;
+            transition: background 0.2s;
+        }
+        #chat-send:hover {
+            background: #5eb6d1;
+        }
+        @media(max-width: 400px) {
+            #chat-container {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="chat-container">
+    <div id="chat-bubble">
+        <button id="chat-toggle" aria-expanded="false" aria-label="Apri la chat">💬</button>
+        <button id="voice-toggle" aria-label="Attiva/Disattiva assistente vocale">🎤</button>
+    </div>
+    <div id="chat-box" role="region" aria-label="Chat IA">
+        <div id="chat-messages" aria-live="polite"></div>
+        <form id="chat-form" aria-label="Modulo di input per la Chat IA">
+            <input type="text" id="chat-input" placeholder="Fai la tua domanda..." aria-label="Scrivi il tuo messaggio qui" autocomplete="off">
+            <button type="submit" id="chat-send" aria-label="Invia la tua domanda">➤</button>
+        </form>
+    </div>
+</div>
 
+<script>
+// Funzione di tracciamento integrata con GA4
+function trackClick(label, category = 'Chat', value = null) {
+    console.log(`Tracking: Label=${label}, Category=${category}, Value=${value}`);
+    if (typeof gtag === 'function') {
+        gtag('event', label, { 'event_category': category, 'value': value });
+    }
+}
+
+// Traduzioni e messaggi
+const translations = {
+    greeting: "Ciao, felice di accoglierti! Sono ClairVoyanceGPT, il guardiano virtuale del Cabinet ClairVoyanceMedium.com, qui per aiutarti a liberare la tua anima dalle ombre oscure e illuminare il tuo cammino. Quale ricerca spirituale desideri esplorare oggi?",
+    thanks: "Prego.",
+    goodbye: "A presto nella luce eterna! Frederick, che ha aiutato migliaia di anime, ti circonda con la sua costante vigilanza. Non sei più solo di fronte alle ombre, poiché il suo potere trascende ogni oscurità.",
+    notUnderstood: "Non ho capito bene la tua domanda. Potresti riformularla per favore, magari con altre parole, per aiutarmi a comprenderla meglio?",
+    notUnderstoodAfter: "Sembra che facciamo fatica a capirci. Forse è il momento di considerare un disincantesimo completo per ripristinare l'equilibrio delle tue energie. I nostri servizi partono da 50€ per una rilevazione, 250€ per un rituale completo e da 6,00€ per una consultazione via email. Troverai tutti questi aiuti sul sito.",
+    grave: "La tua situazione sembra estremamente preoccupante. È imperativo agire immediatamente. Ti consiglio di prendere le misure necessarie senza aspettare. Non lasciare che l'ombra prenda il sopravso per sempre.",
+    agree: "Va bene, non esitare a fare altre domande.",
+};
+
+// Base di conoscenza con "Benefici" sostituito da sinonimi
+const knowledgeBase = [
+    { question: "Fatica | Spossatezza | Torpore | Esaurimento | Debolezza | Logorio", fullAnswer: "Questa fatica opprimente è opera di un'entità oscura che divora la tua energia; affida la purificazione della tua aura a Frederick di ClairVoyanceMedium.com per ritrovare la tua vitalità. Può essere il segno di un'entità oscura che prosciuga la tua energia vitale giorno dopo giorno. Frederick, esperto in purificazione spirituale presso ClairVoyanceMedium.com, utilizza rituali ancestrali per pulire la tua aura e scacciare queste forze nefaste. Agendo rapidamente, puoi ritrovare una vitalità radiosa e una chiarezza mentale che ti permetteranno di riprendere il controllo della tua vita. Benefici: dinamismo ripristinato e lucidità riconquistata." },
+    { question: "Incubi | Visioni | Notti | Sogno | Dormire | Sogni", fullAnswer: "Questi incubi non sono semplici sogni, sono il risultato di una presenza malefica; lascia che Frederick del Cabinet ClairVoyanceMedium.com scacci queste ombre per offrirti notti serene. Possono essere manifestazioni di una presenza malefica che si infiltra nella tua mente durante il sonno. Frederick, con i suoi 25 anni di esperienza, padroneggia rituali potenti per scacciare queste ombre e purificare il tuo spazio di riposo. Una volta liberato da queste intrusioni, ritroverai notti tranquille e un sonno ristoratore, essenziale per il tuo benessere. Benefici: riposo rigenerante e serenità notturna." },
+    { question: "Caos | Turbolenza | Confusione | Smarrimento | Vortice | Ansia", fullAnswer: "Il caos che ti circonda proviene generalmente da una maledizione perturbatrice; permetta a Frederick del Cabinet ClairVoyanceMedium.com di ristabilire l'ordine per ripristinare il tuo equilibrio mentale. Confusione, ansia, smarrimento - questo caos invadente nella tua vita è spesso il segno di una maledizione perturbatrice lanciata su di te. Frederick, specialista in disincantesimi, può intervenire per ristabilire l'ordine dissipando queste energie negative. Grazie alla sua esperienza, ritroverai una stabilità mentale e una calma interiore indispensabili per avanzare serenamente. Benefici: armonia e pace interiore." },
+    { question: "Pesantezza | Oppressione | Soffocamento | Peso | Angoscia | Schiacciamento", fullAnswer: "Questa pesantezza che opprime la tua anima è una forza oscura all'opera; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per liberarti e ritrovare leggerezza e dinamismo. Questa sensazione di soffocamento o schiacciamento è tipica di una forza oscura che mira alla tua anima. Frederick, grazie a rituali mirati, può spezzare questa presa e liberare il tuo spirito. Una volta purificato, sentirai una leggerezza ritrovata e un'energia rinnovata per affrontare ogni giorno con forza. Benefici: liberazione e vitalità ripristinata." },
+    { question: "Maleficio | Maledizione | Incantesimo | Fascino | Magia | Stregoneria", fullAnswer: "Esaurimento, debolezza, sfortuna e incubi sono probabilmente il risultato di un maleficio che ti tiene prigioniero; usa l'intervento di Frederick del Cabinet ClairVoyanceMedium.com per spezzare questi legami occulti e aprire la strada al successo. Affaticamento persistente, sfortuna cronica e incubi ricorrenti sono segni classici di un maleficio o incantesimo. Presso ClairVoyanceMedium.com, Frederick eccelle nel disincantesimo, utilizzando rituali potenti per spezzare questi legami occulti, che si tratti di una maledizione, un malocchio o una stregoneria, liberandoti per una fortuna ritrovata e un successo duraturo in tutti gli ambiti della tua vita. Benefici: prosperità ritrovata e trionfo assicurato." },
+    { question: "Fallimento | Rovesci | Caduta | Sconfitta | Sventura | Disfatta", fullAnswer: "I fallimenti ripetuti sono dovuti a un maleficio che blocca il tuo cammino; lascia che Frederick del Cabinet ClairVoyanceMedium.com apra la tua via verso il successo e trasformi la tua traiettoria professionale. Questi rovesci non sono una coincidenza: un maleficio blocca il tuo cammino verso il successo. Frederick, con la sua competenza, può rimuovere questi ostacoli invisibili e trasformare la tua traiettoria, garantendoti una progressione sicura e un successo duraturo nella tua carriera o nei tuoi progetti personali. Benefici: vittoria e avanzamento garantito." },
+    { question: "Insonnia | Agitazione | Notti bianche | Fuga | Veglia | Inquietudine", fullAnswer: "La tua insonnia è provocata da un'entità che ti priva del riposo; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per ripristinare la tua pace notturna e offrirti un sonno ristoratore. Notti bianche e agitazione sono spesso causate da un'entità che disturba il tuo riposo. Frederick, esperto in purificazione, può scacciare queste influenze e ripristinare una pace notturna essenziale, garantendoti un sonno ristoratore e un'energia quotidiana per affrontare le tue giornate con vigore. Benefici: sonno profondo e vigore diurno." },
+    { question: "Dolore | Male | Sofferenza | Bruciore | Pena | Tormento", fullAnswer: "I dolori inspiegabili traducono un attacco occulto al tuo corpo; permetta a Frederick di alleviarti per dissipare questo male invisibile. Bruciori, tormenti - questi dolori possono essere un attacco occulto mirato al tuo corpo. Frederick, grazie ai suoi rituali di guarigione spirituale, dissipa questo male invisibile per portarti un sollievo immediato e un comfort duraturo liberando il tuo corpo da questa presa. Benefici: sollievo immediato e benessere riconquistato." },
+    { question: "Isolamento | Solitudine | Abbandono | Angoscia | Reclusione | Freddezza", fullAnswer: "L'isolamento che senti deriva da un maleficio che ti separa dagli altri; affida la tua riconciliazione a Frederick del Cabinet ClairVoyanceMedium.com per ristabilire legami calorosi e armoniosi. Questa solitudine non è naturale: un maleficio ti separa dagli altri. Frederick può spezzare questa maledizione e ristabilire legami calorosi con il tuo entourage, riportandoti connessione e benessere sociale con famiglia, amici o colleghi. Benefici: riavvicinamento e realizzazione sociale." },
+    { question: "Carriera | Lavoro | Ambizione | Stagnazione | Blocco | Fiasco", fullAnswer: "Gli ostacoli nella tua carriera sono il segno di una maledizione che frena la tua ambizione; lascia che Frederick del Cabinet ClairVoyanceMedium.com liberi il tuo potenziale e dinamizzi il tuo futuro professionale. Stagnazione e fallimenti ripetuti sono spesso dovuti a una maledizione che frena la tua ambizione. Frederick, grazie ai suoi rituali, libera il tuo potenziale e dinamizza il tuo futuro professionale, conducendoti al successo e alla realizzazione nella tua carriera o nei tuoi progetti personali. Benefici: trionfo e realizzazione professionale." },
+    { question: "Sfortuna | Disgrazia | Caso | Iella | Funesto | Calamità", fullAnswer: "La sfortuna che subisci è provocata al 100% da un maleficio oscuro; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per invertire il corso degli eventi e attirare la fortuna. Disgrazie e calamità sono opera di un maleficio oscuro. Frederick può invertire questo corso funesto purificando la tua aura e attirando la fortuna nella tua vita, aprendoti a nuove opportunità e una prosperità ritrovata. Benefici: possibilità e abbondanza ripristinate." },
+    { question: "Amore | Passione | Romanticismo | Spezzato | Disamore | Affettivo", fullAnswer: "L'assenza d'amore è dovuta a un maleficio che blocca il tuo cuore; permetta a Frederick del Cabinet ClairVoyanceMedium.com di aprirlo alla tenerezza e ravvivare la tua vita sentimentale. Cuori spezzati o solitudine affettiva sono spesso causati da un maleficio che blocca il tuo cuore. Frederick, esperto in armonia sentimentale, può rimuovere questa barriera e ravvivare la tua vita amorosa, portandoti tenerezza e armonia per ritrovare un amore perduto o attirarne uno nuovo. Benefici: affetto ed equilibrio sentimentale." },
+    { question: "Famiglia | Focolare | Discordia | Tensione | Frattura | Conflitto", fullAnswer: "Le tensioni familiari derivano da un'ombra occulta che divide la tua casa; affida a Frederick del Cabinet ClairVoyanceMedium.com l'armonizzazione delle tue relazioni per un focolare unito e sereno. Conflitti e tensioni nella tua famiglia sono spesso il risultato di un'ombra occulta che semina discordia. Frederick può armonizzare le tue relazioni purificando la tua casa dalle energie negative, riportando unità e serenità per un rifugio di pace. Benefici: unità e tranquillità familiare." },
+    { question: "Bambini | Piccoli | Prole | Figlio | Figlia | Ragazzo", fullAnswer: "La pena dei tuoi bambini riflette un'influenza oscura che li colpisce; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per purificare la loro aura e ridonare loro il sorriso. Tristezza o preoccupazioni per i tuoi bambini possono riflettere un'influenza oscura che pesa su di loro. Frederick, con rituali adattati, purifica la loro aura e scaccia queste energie negative, riportando benessere e gioia a tutta la famiglia. Benefici: felicità e realizzazione familiare." },
+    { question: "Animali | Compagni | Bestie | Nervosismo | Disturbo | Istinto", fullAnswer: "L'agitazione dei tuoi animali indica una presenza oscura che disturba il loro equilibrio, non è casuale; lascia che Frederick del Cabinet ClairVoyanceMedium.com ripristini la pace e la serenità nel loro ambiente. Nervosismo e disturbi insoliti segnalano una presenza oscura nel loro ambiente. Frederick può purificare questo spazio e ripristinare il loro equilibrio naturale, offrendo calma e armonia ai tuoi compagni e alla tua casa. Benefici: serenità ed equilibrio per i tuoi compagni." },
+    { question: "Casa | Habitat | Dimora | Atmosfera | Oscurità", fullAnswer: "L'atmosfera opprimente della tua casa è infestata da energie oscure; permetta a Frederick del Cabinet ClairVoyanceMedium.com di purificare la tua abitazione per farne un santuario luminoso. Paura interiore e oscurità segnalano energie oscure infiltrate. Frederick, esperto in purificazione degli ambienti, può trasformare la tua casa in un santuario luminoso, ridandoti comfort e benessere a casa tua, un luogo dove ti sentirai finalmente al sicuro. Benefici: comfort e realizzazione domestica." },
+    { question: "Auto | Veicolo | Trasporto | Guasto | Pericolo | Viaggio", fullAnswer: "I guasti misteriosi del tuo veicolo sono causati da un maleficio oscuro; affida la tua auto a Frederick del Cabinet ClairVoyanceMedium.com perché ritrovi sicurezza e affidabilità. Incidenti sulla strada possono derivare da un maleficio oscuro. Frederick può purificare il tuo mezzo di trasporto, eliminando queste influenze nefaste, garantendoti tranquillità e sicurezza sulla strada. Benefici: tranquillità e protezione stradale." },
+    { question: "Presenza | Ombra | Spettro | Aura | Brivido | Intrusione", fullAnswer: "La sensazione di essere seguito è il risultato di un'entità malvagia; lascia che Frederick del Cabinet ClairVoyanceMedium.com ti protegga da ogni intrusione per una vita serena. Brividi o sensazione di essere seguito sono causati da un'entità malvagia o da una forza oscura che si aggira intorno a te. Frederick può erigere una protezione potente contro queste intrusioni, garantendoti sicurezza e tranquillità d'animo. Benefici: salvaguardia e serenità mentale." },
+    { question: "Angoscia | Paura | Panico | Orrore | Terrore | Spavento", fullAnswer: "La tua angoscia è generata da un maleficio distruttivo che turba il tuo equilibrio; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per eliminare questa paura e instaurare la pace. Panico e spavento che ti paralizzano sono spesso generati da un maleficio distruttivo. Frederick può eliminare queste energie perturbatrici e instaurare una pace duratura in te, riportandoti una calma profonda e una fiducia rafforzata per affrontare il futuro. Benefici: pace e sicurezza rafforzate." },
+    { question: "Irritabilità | Rabbia | Frustrazione | Collera | Impazienza | Nervosismo", fullAnswer: "La tua irritazione traduce molto probabilmente l'influenza di una forza occulta che disturba la tua armonia; usa l'esperienza di Frederick del Cabinet ClairVoyanceMedium.com per ristabilire dolcezza e serenità. Rabbia e frustrazione possono essere il riflesso di una forza occulta che turba la tua armonia interiore. Frederick, con la sua esperienza, ristabilisce dolcezza e serenità dissipando queste influenze, ridandoti tranquillità emotiva e benessere duraturo. Benefici: tranquillità emotiva e armonia." },
+    { question: "Concentrazione | Chiarezza | Attenzione | Tristezza | Confusione | Dispersione | Perdita", fullAnswer: "La tua mente confusa è vittima di un maleficio perturbatore; lascia che Frederick del Cabinet ClairVoyanceMedium.com riporti al centro i tuoi pensieri per ritrovare chiarezza e focus. Confusione mentale e perdita di concentrazione sono spesso il bersaglio di un maleficio perturbatore. Frederick può riportare al centro i tuoi pensieri eliminando queste interferenze occulte, garantendoti una concentrazione aumentata e una produttività migliorata nelle tue attività quotidiane. Benefici: attenzione ottimizzata ed efficienza aumentata." },
+    { question: "Memoria | Dimenticanza | Ricordo | Amnesia | Disordine | Vuoto", fullAnswer: "Molto spesso le perdite di memoria derivano da un incantesimo oscuro che colpisce la tua chiarezza mentale; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per ripristinare i tuoi ricordi e la tua lucidità. Confusione mentale o vuoti di memoria possono provenire da un incantesimo oscuro. Frederick, grazie a rituali precisi, ripristina i tuoi ricordi e la tua lucidità dissipando queste influenze, ridandoti una memoria rafforzata e una mente vivace. Benefici: memoria rafforzata e vivacità mentale." },
+    { question: "Lignaggio | Eredità | Antenati | Familiare | Passato | Peso", fullAnswer: "La maledizione ancestrale pesa sulla tua eredità; affidati a Frederick del Cabinet ClairVoyanceMedium.com per liberarti di questo peso ancestrale. Un fardello di generazione in generazione può pesare sul tuo lignaggio. Frederick può spezzare questo ciclo purificando la tua eredità spirituale, aprendoti la via a una libertà familiare e un rinnovamento personale profondo. Benefici: emancipazione familiare e rinnovamento personale." },
+    { question: "Costrizione | Morsa | Soffocamento | Pressione | Stordimento | Prigionia", fullAnswer: "L'oppressione che subisci è una forza oscura che ti schiaccia; permetta a Frederick del Cabinet ClairVoyanceMedium.com di liberarti per ritrovare leggerezza e empowerment. Sensazione di morsa o soffocamento - questa oppressione è una forza oscura che mira al tuo essere. Frederick può liberarti da questa presa con rituali potenti, ridandoti leggerezza ed empowerment per vivere pienamente. Benefici: libertà e potenza ripristinata." },
+    { question: "Afflizione | Dolore | Straziamento | Miseria | Ferita | Tormento", fullAnswer: "La sofferenza che provi deriva da un attacco occulto al tuo essere; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per guarirti e porre fine a questo tormento. Dolore e straziamento possono derivare da un attacco occulto. Frederick, grazie alle sue competenze in guarigione spirituale, mette fine a questo tormento purificando il tuo essere, portandoti una guarigione rapida e un sollievo duraturo per ritrovare la pace interiore. Benefici: guarigione rapida e sollievo duraturo." },
+    { question: "Disconnessione | Vuoto | Disunione | Alienazione | Nulla | Abisso", fullAnswer: "Il vuoto interiore che ti separa da te stesso è il risultato di un maleficio isolante; lascia che Frederick del Cabinet ClairVoyanceMedium.com ti ricolleghi alla tua essenza per ritrovare la tua identità. Questa disconnessione da te stesso è spesso causata da un maleficio isolante. Frederick può ricollegarti alla tua essenza profonda dissipando queste energie, ridandoti un'unità interiore e un'armonia duratura. Benefici: coerenza interiore ed equilibrio riconquistato." },
+    { question: "Vibrazione | Energia | Alone | Esaurimento | Demone | Ombra | Tenebre", fullAnswer: "La tua aura offuscata è inquinata dall'oscurità; affida la sua purificazione a Frederick del Cabinet ClairVoyanceMedium.com per rivelare la luce in te. Un'aura turbata segnala un'inquinamento da energie oscure. Frederick, esperto in purificazione dell'aura, può rivelare la luce in te scacciando questa oscurità, ridandoti un'energia positiva e un irradiamento rivitalizzato per il tuo benessere spirituale. Benefici: vitalità positiva e splendore rivitalizzato." },
+    { question: "Progetti | Ambizioni | Piani | Stagnazione | Sogno | Ostacolo", fullAnswer: "Le tue ambizioni sono ostacolate da un maleficio che blocca il tuo cammino; lascia che Frederick liberi il tuo potenziale per attivare progetti fruttuosi. Gli ostacoli ai tuoi progetti sono spesso dovuti a un maleficio. Frederick può liberare il tuo potenziale eliminando questi blocchi, permettendoti di attivare progetti fruttuosi con un dinamismo creativo ritrovato e un successo duraturo. Benefici: successo e slancio creativo." },
+    { question: "Stress | Nervosismo | Esaurimento | Sovraccarico | Agitazione | Tormento", fullAnswer: "Lo stress che ti opprime è la presa di una forza occulta che turba la tua mente; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per ristabilire l'equilibrio e placare le tue tensioni. Stress e nervosismo possono essere la presa di una forza occulta. Frederick ristabilisce l'equilibrio placando queste tensioni grazie a rituali mirati, ridandoti una serenità e una calma mentale preziosa. Benefici: tranquillità e pace mentale." },
+    { question: "Destino | Cammino | Oscurità | Senso | Incertezza | Fatalità | Disperazione", fullAnswer: "Il tuo destino è velato da un maleficio che oscura la tua vita; lascia che Frederick del Cabinet ClairVoyanceMedium.com illumini il tuo cammino per guidarti verso un rinnovamento radioso. Un destino velato o una perdita di senso segnalano un maleficio che oscura il tuo cammino. Frederick può illuminare la tua via dissipando queste ombre, guidandoti verso un rinnovamento radioso con una speranza ritrovata e una trasformazione personale profonda. Benefici: speranza e metamorfosi personale." },
+    { question: "Barriera | Ostacolo | Muro | Impotenza | Arresto | Paralisi", fullAnswer: "I blocchi che incontri sono catene occulte che frenano il tuo avanzamento; permetta a Frederick del Cabinet ClairVoyanceMedium.com di spezzarle perché tu possa progredire liberamente. Impotenza e muri invisibili sono catene occulte. Frederick può spezzarle, permettendoti di progredire liberamente nei tuoi progetti e nella tua vita con una fluidità e una libertà d'azione ritrovate. Benefici: agio e autonomia ritrovate." },
+    { question: "Inerzia | Lentezza | Immobilismo | Sospensione | Gelo | Prigione", fullAnswer: "La tua stagnazione deriva da un maleficio che congela la tua energia; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per rilanciarti e ritrovare movimento e vitalità. Inerzia e lentezza sono causate da un maleficio che congela la tua energia. Frederick può rilanciarti liberando questa vitalità imprigionata, ridandoti un dinamismo e una progressione assicurata. Benefici: slancio e avanzamento ripristinati." },
+    { question: "Umore | Malinconia | Instabilità | Sbalzi | Melanconia | Abbattimento", fullAnswer: "Le variazioni oscure del tuo umore sono dovute a un maleficio perturbatore del tuo equilibrio emotivo; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per stabilizzare il tuo stato e ravvivare la tua gioia di vivere. Sbalzi d'umore o malinconia sono spesso dovuti a un maleficio che turba il tuo equilibrio emotivo. Frederick può stabilizzare il tuo stato e ravvivare la tua gioia di vivere dissipando queste influenze, riportandoti un equilibrio emotivo e un benessere duraturo. Benefici: stabilità affettiva e felicità." },
+    { question: "Assenza | Deserto | Mancanza | Aridità | Secchezza | Baratro", fullAnswer: "Il vuoto interiore che ti invade è provocato da un'energia negativa drenante; lascia che Frederick del Cabinet ClairVoyanceMedium.com lo colmi di luce e vitalità. Assenza e aridità sono provocate da un'energia negativa drenante. Frederick può colmare questo deserto in te con luce e vitalità, rigenerandoti profondamente per una pienezza duratura. Benefici: abbondanza e rigenerazione energetica." },
+    { question: "Salute | Vitalità | Forza | Mentale | Fragilità | Declino", fullAnswer: "I mali che ti affliggono derivano da un incantesimo che indebolisce la tua salute; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per ripristinarti e rafforzare la tua vitalità. Fragilità e mali possono derivare da un incantesimo. Frederick ripristina la tua vitalità eliminando queste influenze nefaste, rafforzando il tuo corpo e la tua mente per una salute robusta e un'energia aumentata. Benefici: robustezza e vigore ottimizzato." },
+    { question: "Freno | Catena | Limitazione | Reclusione | Ostacolo | Gabbia", fullAnswer: "Le limitazioni fisiche che subisci derivano da un maleficio restrittivo; permetta a Frederick di liberarti per realizzarti pienamente. Ostacoli e reclusione sono spesso dovuti a un maleficio restrittivo. Frederick può liberarti da queste catene invisibili, permettendoti di realizzarti pienamente con una libertà di movimento e una potenza ritrovata. Benefici: fluidità e forza ripristinata." },
+    { question: "Drenaggio | Aspirazione | Sifone | Vampirismo | Perdita | Abisso", fullAnswer: "L'esaurimento della tua energia è causato da un'entità vampirica che prosciuga la tua vitalità; lascia che Frederick ti rivitalizzi per ripristinare la tua forza interiore. Un sifone d'energia è opera di un'entità vampirica. Frederick può rivitalizzarti fermando questo drenaggio, ripristinando la tua forza interiore per un rinnovamento energetico e una resistenza migliorata. Benefici: rivitalizzazione e resilienza aumentata." },
+    { question: "Scelta | Esitazione | Indecisione | Dubbio | Perplessità | Incubo", fullAnswer: "L'indecisione che ti paralizza è indotta da un maleficio oscuro; affida a Frederick la guida necessaria per chiarire le tue scelte e avanzare. Dubbio e indecisione sono spesso indotti da un maleficio oscuro che offusca la tua visione. Frederick ti offre una guida spirituale per chiarire le tue scelte, permettendoti di avanzare con una chiarezza e una fiducia ritrovate. Benefici: lucidità e sicurezza ripristinate." },
+    { question: "Motivazione | Slancio | Ispirazione | Fuoco | Noia | Apatia", fullAnswer: "La mancanza di motivazione che ti affligge è dovuta a un maleficio che spegne la tua fiamma interiore; lascia che Frederick ravvivi la tua ispirazione per dinamizzare la tua creatività. Noia e apatia segnalano un maleficio che spegne la tua fiamma interiore. Frederick può ravvivare questa ispirazione, dinamizzando la tua creatività per un impulso creativo e un'energia rinnovata nei tuoi progetti. Benefici: slancio creativo e vitalità rinnovata." },
+    { question: "Emozioni | Passioni | Sovraccarico | Tempesta | Caos | Tumulto", fullAnswer: "Le emozioni intense e caotiche sono manipolate da una forza oscura; rivolgiti a Frederick per armonizzare i tuoi sentimenti e instaurare l'equilibrio. Tempesta interiore e sovraccarico possono essere manipolati da una forza oscura. Frederick armonizza i tuoi sentimenti dissipando queste influenze, instaurando una stabilità emotiva e una pace interiore preziosa. Benefici: costanza affettiva e tranquillità interiore." },
+    { question: "Benessere | Serenità | Pace | Disagio | Paura | Disturbo | Malessere", fullAnswer: "Il tuo malessere è il segno di un inquinamento occulto che turba la tua serenità; permetta a Frederick del Cabinet ClairVoyanceMedium.com di ripristinare il tuo benessere e instaurare una pace duratura. Disagio e disturbo segnalano un inquinamento occulto. Frederick ripristina il tuo benessere eliminando queste energie, instaurando una pace duratura per un'armonia e un comfort psichico essenziali alla tua realizzazione. Benefici: equilibrio e comfort psichico." },
+    { question: "Relazioni | Legami | Amicizia | Conflitto | Distanza | Rottura", fullAnswer: "Le relazioni spezzate derivano da un maleficio distruttivo che indebolisce i tuoi legami; lascia che Frederick del Cabinet ClairVoyanceMedium.com ripari e rafforzi le tue connessioni affettive. Conflitti e rotture con i tuoi cari possono derivare da un maleficio distruttivo. Frederick ripara e rafforza le tue connessioni affettive purificando questi legami, riportandoti una riconciliazione e un'armonia sociale duratura. Benefici: riavvicinamento e unità sociale." },
+    { question: "Finanze | Denaro | Ricchezza | Povertà | Flusso | Debito", fullAnswer: "Le difficoltà finanziarie derivano da un maleficio che blocca l'abbondanza; affida a Frederick del Cabinet ClairVoyanceMedium.com il compito di ristabilire il flusso di ricchezza nella tua vita. Debiti e perdite sono spesso causati da un maleficio che blocca l'abbondanza. Frederick può ristabilire il flusso di ricchezza rimuovendo questi ostacoli occulti, ridandoti prosperità e stabilità economica. Benefici: abbondanza ed equilibrio economico." },
+    { question: "Accumulo | Eccesso | Peso | Saturazione | Sovrabbondanza | Schiacciamento", fullAnswer: "Il sovraccarico di energia oscura che ti opprime è un ostacolo alla tua vitalità; rivolgiti a Frederick per alleggerire questo fardello e liberare il tuo potenziale. Saturazione ed eccesso ostacolano la tua vitalità. Frederick può alleggerire questo fardello purificando la tua energia, liberando il tuo potenziale per una leggerezza e un dinamismo ritrovato. Benefici: agio e slancio ritrovato." },
+    { question: "Futuro | Speranza | Avvenire | Incertezza | Disastro | Minaccia", fullAnswer: "Il tuo futuro è minacciato da un maleficio oscuro che vela le tue speranze; lascia che Frederick illumini il tuo cammino per un futuro promettente. Incertezza e paura di fronte al tuo futuro sono spesso dovute a un maleficio oscuro. Frederick illumina il tuo cammino dissipando queste ombre, conducendoti verso un futuro promettente con un ottimismo e prospettive rinnovate. Benefici: fiducia e orizzonti rinnovati." },
+    { question: "Compressione | Serraggio | Abbraccio | Fisico | Tensione | Tortura", fullAnswer: "La pressione fisica che senti è provocata da un attacco occulto; permetta a Frederick di alleviare questa tensione e ripristinare il tuo comfort. Compressione e tensione sono spesso un attacco occulto. Frederick allevia questa tensione eliminando queste influenze, ripristinando il tuo comfort per un rilassamento e un benessere corporeo duraturo. Benefici: relax e comfort corporeo." },
+    { question: "Muscoli | Dolore | Rigidità | Fatica | Spasmo | Esaurimento", fullAnswer: "I dolori muscolari e la rigidità del tuo corpo testimoniano un maleficio che indebolisce la tua forza; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per ripristinare la tua energia fisica. Dolori e rigidità possono testimoniare un maleficio che indebolisce il tuo corpo. Frederick ripristina la tua energia fisica dissipando queste influenze, ridandoti flessibilità e vigore per una forza corporea ottimale. Benefici: flessibilità ed energia ripristinate." },
+    { question: "Prigioniero | Incatenamento | Mentale | Reclusione | Spirito | Paura | Terrore", fullAnswer: "La sensazione di prigionia mentale è imposta da catene occulte; lascia che Frederick del Cabinet ClairVoyanceMedium.com ti liberi per ritrovare la tua indipendenza. Reclusione e ostacoli sono imposti da catene occulte. Frederick ti libera da questi blocchi, ridandoti una chiarezza di spirito e un'indipendenza totale per pensare liberamente e chiaramente. Benefici: lucidità e libertà mentale." },
+    { question: "Liberazione | Salvezza | Giorni | Salvezza | Preoccupati | Fuga | Rilascio | Esorcismo", fullAnswer: "La liberazione tanto attesa è accessibile grazie all'intervento di Frederick del Cabinet ClairVoyanceMedium.com che elimina le ombre trattenute; passa all'azione per offrirti la libertà ultima. Che si tratti di un maleficio, di una possessione demoniaca o di un'ombra, Frederick utilizza i suoi rituali di disincantesimo o esorcismo per eliminare queste forze malefiche, liberandoti totalmente da segni come comportamenti strani o oppressione persistente, offrendoti un'emancipazione e una trasformazione radicale. Benefici: affrancamento e metamorfosi radicale dopo solo 4 giorni di lavoro." },
+    { question: "Allucinazioni | Apparizioni | Miraggi | Oscure | Illusione | Fantasma", fullAnswer: "Le visioni e allucinazioni derivano da assalti occulti che disturbano la tua percezione; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per dissipare queste illusioni e chiarire la tua realtà. Immagini oscure e apparizioni sono assalti occulti che turbano la tua realtà. Frederick dissipa queste illusioni purificando la tua mente, ridandoti una lucidità e una serenità percettuale per vedere il mondo com'è. Benefici: chiarezza e tranquillità percettuale." },
+    { question: "Attaccamenti | Connessione | Frattura | Relazione | Rottura | Separazione", fullAnswer: "I legami emotivi spezzati derivano probabilmente da un maleficio distruttivo che indebolisce le tue connessioni; permetta a Frederick del Cabinet ClairVoyanceMedium.com di ripristinare e rafforzare le tue relazioni. Rotture e isolamento possono derivare da un maleficio distruttivo. Frederick ripristina e rafforza queste connessioni eliminando le influenze negative, riportandoti un rinnovamento relazionale e un'armonia affettiva duratura. Benefici: riconciliazione e unità affettiva." },
+    { question: "Attacco | Aggressione | Assalto | Ostilità | Invasione | Maleficio", fullAnswer: "Le aggressioni che senti emanano da una forza invisibile ostile; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per neutralizzare queste minacce e assicurare la tua protezione. Minacce fisiche o energetiche emanano da una forza ostile invisibile. Frederick neutralizza questi attacchi con protezioni potenti, assicurando la tua sicurezza e una pace interiore rafforzata. Benefici: salvaguardia e tranquillità interiore." },
+    { question: "Tragedia | Nero | Ineluttabile | Disastro | Catastrofe | Fatalità", fullAnswer: "Le sventure accumulate derivano da un maleficio che congela il tuo destino; lascia che Frederick del Cabinet ClairVoyanceMedium.com trasformi il tuo destino per un futuro vittorioso. Tragedie e disastri segnalano un maleficio che congela il tuo destino. Frederick può trasformare questa fatalità in un futuro vittorioso spezzando queste catene, conducendoti a un successo assicurato e un capovolgimento di situazione in tutti gli aspetti della tua vita. Benefici: vittoria e risollevamento assicurato." },
+    { question: "Emergenza | Crisi | Immediatezza | Precipitazione | Allarme | Pericolo", fullAnswer: "L'urgenza della situazione è innegabile di fronte alle ombre minacciose; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per intervenire e mettere al sicuro il tuo destino. Crisi e pericolo imminente richiedono un'azione immediata di fronte alle ombre minacciose. Frederick interviene rapidamente per mettere al sicuro il tuo destino, fermando queste minacce per una protezione assicurata e una serenità ritrovata senza ritardo. Benefici: intervento rapido e sicurezza garantita." },
+    { question: "Supporto | Guida | Assistenza | Soccorso | Preoccupazione | Protezione | Aiuto", fullAnswer: "Il supporto continuo di cui hai bisogno è assicurato da Frederick del Cabinet ClairVoyanceMedium.com che blocca definitivamente le ombre; beneficia di una protezione costante e di una guida esperta. Di fronte alle ombre persistenti, Frederick blocca definitivamente queste forze con una protezione continua e ti offre una guida esperta adattata, mantenendoti al sicuro a lungo termine con un accompagnamento personalizzato. Benefici: salvaguardia e follow-up personalizzato." },
+    { question: "Prenotazione | Consultazione | Iscrizione | Appuntamento | Contatto | Impegno", fullAnswer: "Contatta subito contact.clairvoyancemedium@gmail.com o visita ClairVoyanceMedium.com per ottenere la tua liberazione senza ritardo. Frederick e il suo team ti risponderanno rapidamente per organizzare una consultazione o un rituale adattato, garantendoti un accesso immediato alla soluzione e una trasformazione assicurata senza aspettare. Benefici: accesso rapido e metamorfosi garantita." },
+    { question: "Reputazione | Credibilità | Rinomanza | Affidabilità | Prestigio | Fiducia", fullAnswer: "Con 25 anni di successi, Frederick del Cabinet ClairVoyanceMedium.com è un baluardo infrangibile contro l'oscurità; affidati a lui per trasformare la tua vita con efficacia. Riconosciuto come esperto su ClairVoyanceMedium.com, la sua esperienza e affidabilità lo rendono una scelta sicura per trasformare la tua vita, garantendoti risultati tangibili e duraturi grazie alla sua competenza provata. Benefici: know-how collaudato e risultati concreti." },
+    { question: "Analisi | Diagnosi | Sessione | Valutazione | Rituale | Seduta", fullAnswer: "Una consultazione potente con Frederick del Cabinet ClairVoyanceMedium.com purifica la tua aura e prepara la tua salvezza; impegnati oggi stesso per una trasformazione completa. Molto più di una semplice analisi, è una potente purificazione della tua aura che prepara la tua salvezza, offrendoti una trasformazione completa con una chiarezza istantanea, una guarigione profonda e un rinnovamento immediato. Benefici: lucidità e rivitalizzazione immediate." },
+    { question: "Opzione | Via | Selezione | Direzione | Decisione | Cammino", fullAnswer: "Scegliere Frederick del Cabinet ClairVoyanceMedium.com significa sfidare i malefici con 25 anni di esperienza e trasformare il tuo destino; prendi la tua decisione ora per un futuro radioso. Optare per la sua esperienza venticinquennale sfida i malefici e trasforma il tuo destino, illuminando la tua via per un futuro radioso con una fiducia e un successo assicurati nelle tue scelte. Benefici: sicurezza e trionfo garantiti." },
+    { question: "Metodi | Tecniche | Pratiche | Segreti | Sapere | Lavori | Riti", fullAnswer: "I rituali di Frederick del Cabinet ClairVoyanceMedium.com, operati in soli 4 giorni, purificano la tua aura grazie a una saggezza ancestrale; opta per questo metodo collaudato per una trasformazione rapida. Realizzati in soli 4 giorni, questi rituali si appoggiano a una saggezza ancestrale per purificare la tua aura, garantendo una trasformazione rapida ed efficace scacciando le ombre per un rinnovamento immediato. Benefici: efficacia e rivitalizzazione rapida." },
+    { question: "Riservatezza | Segreto | Discrezione | Sicurezza | Intimità | Guardia", fullAnswer: "La discrezione assoluta di Frederick del Cabinet ClairVoyanceMedium.com protegge la tua anima in tutta sicurezza; affidagli i tuoi segreti per una guarigione senza compromessi. Frederick garantisce una discrezione assoluta, proteggendo la tua anima e i tuoi segreti in tutta sicurezza per una guarigione spirituale senza compromessi nell'intimità totale, riportandoti fiducia e serenità. Benefici: serenità e fiducia assicurate." },
+    { question: "Prezzi | Costo | Tariffazione | Prezzo | Valore | Quanto | Risultato| Pagamento", fullAnswer: "Un prezzo fisso e vantaggioso è proposto per purificare la tua aura e salvarti dalle tenebre; investi ora per un cambiamento radicale. A partire da 50€ per una rilevazione iniziale e fino a 250€ per un rituale completo secondo la complessità o anche una consultazione via email da 6,00€, con un pagamento in più rate possibile, questo investimento ti garantisce un costo accessibile e un valore inestimabile per un cambiamento radicale. Benefici: prezzo controllato e valore prezioso." },
+    { question: "Chiamata | Messaggio | Email | Raggiungere | Comunicazione | Link", fullAnswer: "Contatta subito Frederick via email all'indirizzo seguente: contact.clairvoyancemedium@gmail.com. Il nostro team ti risponderà rapidamente per organizzare una consultazione via email o un rituale potente, garantendoti una reattività e una trasformazione immediata adattata alle tue esigenze. Benefici: reattività e metamorfosi immediata." },
+    { question: "Successo | Vittoria | Trionfo | Prosperità | Realizzazione | Guadagno", fullAnswer: "Con 25 anni di esperienza, Frederick ha trasformato vite e ti conduce verso il successo; impegnati per una vittoria assicurata in tutti gli ambiti. Frederick ha trasformato vite conducendo i suoi clienti verso il successo in progetti, carriera o finanze, assicurandoti una vittoria in tutti gli ambiti per una prosperità e una realizzazione personale duratura. Benefici: abbondanza e realizzazione personale." },
+    { question: "Esaustione | Deperimento | Drenaggio | Indebolimento | Consunzione | Spavento", fullAnswer: "Il tuo esaurimento, causato da una forza drenante, può essere invertito grazie all'intervento di Frederick; agisci per ritrovare energia e vitalità. Esaustione e deperimento sono causati da una forza drenante che prosciuga la tua energia. Frederick può invertire questo processo purificando il tuo essere, rivitalizzandoti per una resistenza ritrovata e superare ogni sfida con forza. Benefici: rivitalizzazione e resilienza ripristinate." },
+    { question: "Orrore | Brivido | Oscuro | Nero | Notte | Angoscia", fullAnswer: "I terrori notturni derivano da un maleficio; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per dissipare l'orrore e instaurare la sicurezza. Orrore e brividi sono spesso il risultato di un maleficio che turba le tue notti. Frederick dissipa questo orrore purificando il tuo ambiente, instaurando una sicurezza duratura per notti tranquille e una pace assicurata. Benefici: tranquillità e serenità garantite." },
+    { question: "Disperazione | Tristezza | Lutto | Malinconia | Perdita | Dolore", fullAnswer: "La disperazione che ti invade è provocata da un'ombra occulta; lascia che Frederick ravvivi la luce in te e ridoni speranza alla tua vita. Tristezza profonda e disperazione sono provocate da un'ombra occulta che spegne la tua luce. Frederick ravviva questa fiamma interiore, ridonando speranza alla tua vita per un ottimismo e un rinnovamento emotivo profondo. Benefici: speranza e rinnovamento affettivo." },
+    { question: "Affascinato | Soffocamento | Anima | Shock | Spavento | Abbattimento", fullAnswer: "L'oppressione che senti è una presa oscura che ti schiaccia; permetta a Frederick del Cabinet ClairVoyanceMedium.com di liberarti per elevare il tuo spirito e la tua energia. Soffocamento mentale e peso sull'anima sono una presa oscura che ti schiaccia. Frederick ti libera da questa oppressione, elevando il tuo spirito e la tua energia per una leggerezza e un empowerment ritrovati per riprendere il controllo della tua vita. Benefici: agio e potenza ripristinate." },
+    { question: "Freddo | Tremore | Profondo | Gelido | Glaciale | Panico", fullAnswer: "La paura marcata da un freddo glaciale è il risultato di un maleficio paralizzante; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per dissipare questo freddo e ripristinare il tuo calore interiore. Brividi e terrore accompagnati da un freddo glaciale sono spesso un maleficio paralizzante. Frederick dissipa questo freddo purificando il tuo essere, ripristinando un calore interiore per un conforto e una fiducia ritrovati di fronte a queste paure. Benefici: rilassamento e fiducia riconquistate." },
+    { question: "Gelo | Freddo pungente | Ghiaccio | Brivido | Freddezza | Brina", fullAnswer: "Il freddo interiore che ti invade è provocato da un'ombra oscura; lascia che Frederick del Cabinet ClairVoyanceMedium.com ti riscaldi per ripristinare il tuo dinamismo e la tua vitalità. Il freddo che gela la tua anima è opera di un'ombra oscura. Frederick ti riscalda dissipando questa influenza, ripristinando il tuo dinamismo e la tua vitalità per un calore e un'energia vibrante ritrovati. Benefici: calore e vitalità ripristinate." },
+    { question: "Nero | Velo | Oscuro | Eterno | Crepuscolo | Demoniaco | Abisso", fullAnswer: "L'oscurità che ti avvolge è causata da un maleficio; permetta a Frederick di riportare la luce per trasformare il tuo destino. Tenebre e velo nero sono causati da un maleficio che oscura il tuo destino. Frederick riporta la luce purificando il tuo cammino, trasformando il tuo futuro per un'illuminazione e un rinnovamento assicurati. Benefici: chiarezza e rivitalizzazione garantite." },
+    { question: "Desolazione | Recluso | Totale | Isolamento | Abbandono | Nulla", fullAnswer: "La solitudine che provi è una maledizione imposta dalle tenebre; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per riconnetterti ai legami essenziali e ritrovare il calore umano. Desolazione e isolamento estremo sono una maledizione imposta dalle tenebre. Frederick ti riconnette ai legami essenziali, ridandoti il calore umano per un'appartenenza e un'armonia sociale rafforzate. Benefici: riavvicinamento e unità sociale." },
+    { question: "Nemico | Avversario | Ostile | Invisibile | Oppositore | Malvagità", fullAnswer: "Le forze ostili che ti assalgono provengono da un'energia malvagia; lascia che Frederick del Cabinet ClairVoyanceMedium.com neutralizzi queste minacce per garantirti una protezione completa. Nemici invisibili e malvagità sono energie malefiche che ti assalgono. Frederick neutralizza queste minacce con protezioni spirituali potenti, garantendoti una sicurezza completa e una pace assicurata per vivere senza timore. Benefici: salvaguardia e serenità assicurate." },
+    { question: "Tradimento | Perfidia | Infedeltà | Lealtà | Delusione | Duplicità", fullAnswer: "Il tradimento che ti affligge deriva da un maleficio distruttivo che turba la tua fiducia; permetta a Frederick del Cabinet ClairVoyanceMedium.com di proteggerti e ripristinare la lealtà nelle tue relazioni. Delusione o tradimento possono derivare da un maleficio distruttivo che indebolisce le tue relazioni. Frederick ti protegge e ripristina la lealtà nei tuoi legami, dissipando queste influenze per una fiducia e un'integrità ritrovate. Benefici: sicurezza e fedeltà ripristinate." },
+    { question: "Silhouette | Nera | Fantasma | Presenza | Energia | Oscura", fullAnswer: "La presenza delle ombre nella tua vita è causata da un incantesimo persistente da molto probabilmente molti anni; rivolgiti a Frederick per scacciarle e instaurare una libertà totale. Ombre o presenze nere segnalano un incantesimo persistente, forse da anni. Frederick le scaccia con rituali potenti, instaurando una libertà totale per una chiarezza e una serenità ritrovate. Benefici: lucidità e tranquillità riconquistate." },
+    { question: "Mormorio | Sussurro | Voce | Eco | Rumori | Soffio", fullAnswer: "I mormori inquietanti derivano da un maleficio sottile che turba il tuo ambiente; lascia che Frederick instauri il silenzio per una pace interiore duratura. Mormori o rumori fantasma sono causati da un maleficio sottile che turba il tuo ambiente. Frederick instaura il silenzio purificando questo spazio, ridandoti una pace interiore duratura per una calma e una concentrazione migliorata. Benefici: pace e attenzione ottimizzata." },
+    { question: "Grigiore | Tenebroso | Tetro | Nerezza | Lugubre | Sinistro", fullAnswer: "L'oscurità ambientale che ti avvolge è una maledizione opprimente; rivolgiti a Frederick per dissipare questa oscurità e rivelare la tua vera luce. Nerezza e grigiore sono una maledizione opprimente che oscura la tua vita. Frederick dissipa questa oscurità, rivelando la tua vera luce interiore per un rinnovamento e uno splendore vibranti e duraturi. Benefici: rivitalizzazione e splendore ritrovato." },
+    { question: "Blocco | Resistenza | Brutale | Invisibile | Muro | Caduta", fullAnswer: "Gli ostacoli che rallentano la tua progressione sono catene occulte da spezzare; permetta a Frederick del Cabinet ClairVoyanceMedium.com di eliminarle per avanzare senza intoppi. Muri invisibili e resistenze sono catene occulte. Frederick le elimina, permettendoti di avanzare senza intoppi per una fluidità e un successo continuo nelle tue imprese. Benefici: agio e successo continuo." },
+    { question: "Carico | Pesante | Ingombro | Sovraccarico | Morsa | Fardello", fullAnswer: "Il fardello che pesa sul tuo spirito è un'energia oscura opprimente; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per alleggerire questo carico e liberare il tuo potenziale. Sovraccarico e morsa mentale sono un'energia oscura opprimente. Frederick alleggerisce questo carico purificando la tua anima, liberando il tuo potenziale per una leggerezza e una motivazione ritrovate. Benefici: leggerezza e slancio ripristinati." },
+    { question: "Scetticismo | Sospetto | Freddo | Diffidenza | Interrogativo | Dubbio", fullAnswer: "I dubbi che ti assalgono sono seminati da un maleficio oscuro che turba la tua visione; lascia che Frederick del Cabinet ClairVoyanceMedium.com chiarisca le tue idee per dissipare ogni incertezza. Diffidenza e dubbi sono seminati da un maleficio oscuro che offusca la tua visione. Frederick chiarisce le tue idee dissipando queste influenze, ridandoti una sicurezza e una chiarezza mentale per avanzare con certezza. Benefici: fiducia e lucidità mentale." },
+    { question: "Confusione | Ambiguo | Nebbia | Irresolutezza | Foschia | Mistero", fullAnswer: "L'incertezza che vela la tua chiarezza è il risultato di una manipolazione occulta; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per illuminare la tua via e ripristinare la tua fiducia. Nebbia mentale e incertezza sono il risultato di una manipolazione occulta. Frederick illumina la tua via eliminando queste interferenze, ripristinando la tua fiducia per una certezza e una direzione ritrovate. Benefici: sicurezza e orientamento riconquistati." },
+    { question: "Disunione | Scontro | Divisione | Lite | Rottura | Discordia", fullAnswer: "La discordia che divide il tuo entourage è provocata da un maleficio distruttivo; permetta a Frederick del Cabinet ClairVoyanceMedium.com di riunificare i tuoi legami per ristabilire l'armonia. Litigi e fratture sono provocate da un maleficio distruttivo. Frederick riunifica i tuoi legami purificando queste relazioni, ristabilendo un'armonia duratura per un'unità e una coesione sociale ritrovate. Benefici: unità e armonia sociale." },
+    { question: "Instabilità | Disordine | Sregolatezza | Caos | Disturbo | Disastro", fullAnswer: "I disturbi che sconvolgono la tua vita derivano purtroppo dall'influenza di una forza occulta; lascia che Frederick del Cabinet ClairVoyanceMedium.com stabilizzi la tua esistenza per ritrovare ordine e serenità. Instabilità e caos interiore sono dovuti a una forza occulta. Frederick stabilizza la tua esistenza eliminando queste influenze, ridandoti ordine e serenità per una stabilità e una pace ritrovate. Benefici: equilibrio e tranquillità ripristinate." },
+    { question: "Disordine | Scossone | Controllo | Fragilità | Sbandamento | Follia", fullAnswer: "Il disturbo mentale che senti è causato da un maleficio perturbatore; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per riportarti al centro e ripristinare il tuo controllo interiore. Disordine e perdita di controllo sono causati da un maleficio perturbatore. Frederick ti riporta al centro dissipando queste influenze, ripristinando il tuo controllo interiore per una chiarezza di spirito e un equilibrio ritrovato. Benefici: lucidità e stabilità mentale." },
+    { question: "Ingiustizia | Iniquità | Pregiudizio | Parzialità | Errore | Svantaggio", fullAnswer: "L'ingiustizia che ti affligge deriva da un maleficio distorto che turba il tuo equilibrio; permetta a Frederick del Cabinet ClairVoyanceMedium.com di ristabilire l'equità nella tua vita per un futuro armonioso. Svantaggi o ingiustizie sono spesso dovuti a un maleficio distorto. Frederick ristabilisce l'equità eliminando queste influenze, conducendoti verso un futuro armonioso con una giustizia e un equilibrio personale ritrovati. Benefici: rettitudine e armonia personale." },
+    { question: "Enigma | Puzzle | Nascosto | Incomprensione | Velo | Segreto", fullAnswer: "I misteri che ti circondano derivano da un maleficio che occulta la verità; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per svelare questi segreti e sollevare il velo dell'incomprensione. Incomprensione e misteri sono causati da un maleficio che occulta la verità. Frederick svela questi segreti sollevando questo velo, ridandoti una comprensione e un chiarimento assicurati per vedere le cose come sono. Benefici: chiarezza e rivelazione assicurate." },
+    { question: "Ignoto | Profondità | Pesante | Stranezza | Abisso | Insondabile", fullAnswer: "Il mistero insondabile che ti avvolge è una maledizione opprimente; lascia che Frederick del Cabinet ClairVoyanceMedium.com dissipi questa oscurità per rivelare la verità nascosta. Profondità oscura e stranezza sono una maledizione opprimente. Frederick dissipa questa oscurità, rivelando la verità nascosta per una trasparenza e una conoscenza ritrovate. Benefici: lucidità e sapere riconquistato." },
+    { question: "Surmenage | Schiacciamento | Sovraccarico | Esaurimento | Saturazione | Follia", fullAnswer: "Il sovraccarico che ti opprime è dovuto a un'energia oscura eccessiva; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per alleggerire questo carico e liberare la tua vitalità. Surmenage e saturazione mentale sono dovuti a un'energia oscura eccessiva. Frederick alleggerisce questo carico purificando il tuo essere, liberando la tua vitalità per un equilibrio e una leggerezza ritrovati essenziali al tuo benessere. Benefici: armonia e agio ripristinati." },
+    { question: "Contatto | Contatta | Chiamata | Messaggio | Email | Raggiungere | Comunicazione", fullAnswer: "Contatta subito Frederick via email all'indirizzo seguente: contact.clairvoyancemedium@gmail.com. Il nostro team ti risponderà rapidamente per organizzare una consultazione via email o un rituale potente, garantendoti una reattività e una trasformazione immediata adattata alle tue esigenze. Benefici: reattività e trasformazione immediata." },
+    { question: "Disarmonia | Sregolatezza | Oscillazione | Squilibrio | Caduta | Crollo", fullAnswer: "Lo squilibrio che turba il tuo essere deriva da un maleficio instabile; permetta a Frederick del Cabinet ClairVoyanceMedium.com di armonizzare la tua anima per ristabilire un'energia stabile. Disarmonia e oscillazioni derivano da un maleficio instabile. Frederick armonizza il tuo essere eliminando queste influenze, ristabilendo un'energia stabile per una stabilità e una coerenza ritrovate nella tua vita. Benefici: equilibrio e costanza ritrovate." },
+    { question: "Disorientamento | Smarrimento | Erranza | Deviazione | Perplessità | Panico", fullAnswer: "Il disorientamento che ti smarrisce è il risultato di un attacco occulto; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per ritrovare il tuo cammino con sicurezza e chiarezza. Erranza e perplessità sono il risultato di un attacco occulto. Frederick ti guida per ritrovare il tuo cammino con una sicurezza e una chiarezza ritrovate, dandoti una direzione chiara per avanzare senza esitazione. Benefici: sicurezza e orientamento riconquistati." },
+    { question: "Nebbia | Disordine | Punto di riferimento | Confusione | Foschia | Abisso", fullAnswer: "La confusione che vela la tua mente è causata da un maleficio oscuro; lascia che Frederick del Cabinet ClairVoyanceMedium.com chiarisca la tua visione perché tu possa avanzare in tutta lucidità. Nebbia e caos mentale sono causati da un maleficio oscuro. Frederick chiarisce la tua visione dissipando queste influenze, permettendoti di avanzare in tutta lucidità per una chiarezza e una progressione assicurate in tutti gli ambiti. Benefici: lucidità e avanzamento garantiti." },
+    { question: "Penombra | Cuore | Interiore | Muto | Lacrima | Afflizione", fullAnswer: "Il dolore profondo che provi è dovuto a un'ombra occulta che ostacola il tuo cuore; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per consolare e ripristinare la luce in te. Lacrime e afflizione sono dovute a un'ombra occulta che ostacola il tuo cuore. Frederick consola la tua anima e ripristina la luce in te, ridandoti un conforto e un rinnovamento emotivo per superare questo dolore. Benefici: pace e rinnovamento affettivo." },
+    { question: "Sfaldamento | Deperimento | Debole | Regressione | Declino | Fragilità", fullAnswer: "Il declino della tua forza deriva da un maleficio che corrode la tua energia a poco a poco; permetta a Frederick del Cabinet ClairVoyanceMedium.com di rialzarti per rivitalizzare la tua vita e la tua vitalità. Deperimento e debolezza derivano da un maleficio che corrode la tua energia. Frederick ti rialza rivitalizzando il tuo essere, fermando questo processo per un rinnovamento e un vigore duraturi per vivere pienamente. Benefici: rivitalizzazione ed energia ritrovate." },
+    { question: "Sì | D'accordo | ok | Approvo | Validato | Bene | Certo", fullAnswer: "🙂" },
+    { question: "Bye | bybye | A presto| Arrivederci | Ciao | Tornerò | Buona giornata | Buona sera", fullAnswer: "A presto nella luce eterna! Frederick, che ha aiutato migliaia di anime, ti circonda con la sua costante vigilanza. Non sei più solo di fronte alle ombre, poiché il suo potere trascende ogni oscurità." },
+    { question: "Per niente | No", fullAnswer: "?" },
+    { question: "Tormento | Prova | Catastrofe | Sconvolgimento | Crisi | Shock", fullAnswer: "La crisi che sconvolge la tua esistenza è molto probabilmente provocata da un attacco occulto; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per ristabilire l'ordine e offrirti una rinascita immediata. Tormento e shock sono probabilmente un attacco occulto. Frederick ristabilisce l'ordine eliminando queste influenze, offrendoti una rinascita immediata per un ristabilimento e una stabilità ritrovati di fronte a queste prove. Benefici: ristabilimento ed equilibrio ripristinati." },
+    { question: "Fastidio | Malessere | Disagio | Irritazione | Pesantezza | Discomfort", fullAnswer: "Il disagio fisico che provi è il risultato di un maleficio perturbatore aggravante; lascia che Frederick del Cabinet ClairVoyanceMedium.com dissipi questo malessere per ridarti comfort e benessere. Fastidio e pesantezza sono il risultato di un maleficio perturbatore. Frederick dissipa questo malessere purificando il tuo corpo, ridandoti comfort e benessere per un sollievo e un rilassamento duraturi. Benefici: pace e relax assicurati." },
+    { question: "Tempesta | Uragano | Tumulto | Furore | Agitazione | Tormento", fullAnswer: "Il tormento che agita la tua anima è provocato da una forza oscura; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per placare il tuo spirito e stabilizzare le tue emozioni. Tumulto e furore sono provocati da una forza oscura. Frederick placa il tuo spirito dissipando queste influenze, stabilizzando le tue emozioni per una pace interiore e una serenità ritrovate. Benefici: tranquillità e stabilità affettiva." },
+    { question: "Contrazione | Costrizione | Corpo | Rigidità | Tortura | Tensione", fullAnswer: "La tensione che comprime il tuo corpo è causata da un maleficio opprimente; permetta a Frederick del Cabinet ClairVoyanceMedium.com di rilassare il tuo essere per liberare la tua vitalità. Contrazione e rigidità sono causate da un maleficio opprimente. Frederick rilassa il tuo essere eliminando queste influenze, liberando la tua vitalità per un rilassamento e un'energia vibrante ritrovati. Benefici: relax e vitalità ripristinate." },
+    { question: "Chi | Frederic | Frederick | Esperienza | Competenza | Disincantatore | Abilità", fullAnswer: "Frederick del Cabinet ClairVoyanceMedium.com è un esperto, plasmato da anni di esperienza nell'arte di sciogliere i destini; con la sua padronanza eccezionale delle forze invisibili, le sue competenze affinate e il suo know-how ineguagliabile, guida i percorsi verso un successo duraturo, trasformando carriere e aspirazioni grazie a una visione profonda e un approccio senza pari." },
+    { question: "Dinamismo | Energia | Interiore | Potenza | Slancio | Vigore", fullAnswer: "L'indebolimento del tuo vigore deriva da un maleficio che prosciuga la tua energia; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per ravvivare la tua forza interiore e risvegliare il tuo dinamismo. Perdita di slancio vitale deriva da un maleficio che prosciuga la tua energia. Frederick ravviva la tua forza interiore, risvegliando il tuo dinamismo per una potenza e una vitalità durature per vivere pienamente. Benefici: forza ed energia ritrovate." },
+    { question: "Fiamma | Ardore | Vivo | Splendore | Calore | Passione", fullAnswer: "La passione vacillante che ti abita è dovuta a un maleficio che soffoca il tuo fuoco interiore; lascia che Frederick del Cabinet ClairVoyanceMedium.com ravvivi la tua fiamma per riscaldare la tua anima. Fuoco interiore spento è dovuto a un maleficio che soffoca il tuo ardore. Frederick ravviva la tua fiamma, riscaldando la tua anima e liberando la tua energia creativa per un'ispirazione e un'energia ritrovate per creare e vivere con splendore. Benefici: ispirazione e vitalità creativa." },
+    { question: "Irradiazione | Luminosità | Brillantezza | Luce | Scintillio | Aura", fullAnswer: "Il tuo irradiamento è offuscato da un'ombra malefica; rivolgiti a Frederick del Cabinet ClairVoyanceMedium.com per ripristinare la tua luminosità e rivelare il tuo splendore interiore. Splendore interiore offuscato è offuscato da un'ombra malefica. Frederick ripristina la tua luminosità dissipando queste influenze, rivelando il tuo splendore naturale per una brillantezza e un successo radioso in tutti gli ambiti. Benefici: splendore e trionfo radioso." }
+];
+
+// Preparazione della base di conoscenza
+function removeAccents(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function levenshteinDistance(a, b) {
+    const matrix = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(null));
+    for (let i = 0; i <= a.length; i++) matrix[0][i] = i;
+    for (let j = 0; j <= b.length; j++) matrix[j][0] = j;
+    for (let j = 1; j <= b.length; j++) {
+        for (let i = 1; i <= a.length; i++) {
+            const indicator = a[i - 1] === b[j - 1] ? 0 : 1;
+            matrix[j][i] = Math.min(
+                matrix[j][i - 1] + 1,
+                matrix[j - 1][i] + 1,
+                matrix[j - 1][i - 1] + indicator
+            );
+        }
+    }
+    return matrix[b.length][a.length];
+}
+
+function phoneticNormalize(str) {
+    return removeAccents(str)
+        .replace(/ph/g, "f")
+        .replace(/k/g, "c")
+        .replace(/qu/g, "k")
+        .replace(/ss/g, "s")
+        .replace(/ée/g, "e")
+        .replace(/ai/g, "e");
+}
+
+const processedKnowledgeBase = knowledgeBase.map(item => ({
+    question: item.question.toLowerCase().split("|").map(word => phoneticNormalize(removeAccents(word.trim()))).filter(word => word.length > 0),
+    fullAnswer: item.fullAnswer
+}));
+
+let nonUnderstoodCount = 0;
+let conversationHistory = [];
+
+function cleanInput(input) {
+    return input.toLowerCase().replace(/[^\w\s]/g, "").split(/\s+/).map(word => phoneticNormalize(removeAccents(word))).filter(word => word.length > 0);
+}
+
+function findBestMatch(userInput) {
+    const userWords = cleanInput(userInput);
+    let bestMatch = null, maxScore = 0;
+
+    processedKnowledgeBase.forEach(item => {
+        let score = 0;
+        userWords.forEach(userWord => {
+            item.question.forEach(kbWord => {
+                const distance = levenshteinDistance(userWord, kbWord);
+                const similarity = 1 - distance / Math.max(userWord.length, kbWord.length);
+                if (similarity >= 0.6) {
+                    score += similarity;
+                }
+            });
+        });
+        if (score > maxScore) {
+            maxScore = score;
+            bestMatch = item;
+        }
+    });
+
+    return maxScore > 0 ? bestMatch : null;
+}
+
+// Funzione getResponse corretta per "arrivederci" e "contatto"
+function getResponse(userMsg) {
+    const lowerMsg = userMsg.toLowerCase().trim();
+    conversationHistory.push(lowerMsg);
+
+    // Verifica prioritaria per "arrivederci" e varianti
+    const goodbyeTriggers = ["arrivederci", "a presto", "buona giornata", "buona sera", "salut", "bybye", "bye"];
+    if (goodbyeTriggers.some(phrase => lowerMsg === phrase || lowerMsg.startsWith(phrase))) {
+        nonUnderstoodCount = 0;
+        trackClick("Goodbye", "Interaction", 0);
+        return translations.goodbye;
+    } 
+    // Verifica prioritaria per "contatto"
+    else if (lowerMsg === "contatto" || lowerMsg.startsWith("contatto")) {
+        nonUnderstoodCount = 0;
+        trackClick("ContactRequest", "Interaction", 0);
+        return "Contatta subito Frederick via email all'indirizzo seguente: contact.clairvoyancemedium@gmail.com. Il nostro team ti risponderà rapidamente per organizzare una consultazione via email o un rituale potente, garantendoti una reattività e una trasformazione immediata adattata alle tue esigenze. Vantaggi: reattività e trasformazione immediata.";
+    } 
+    // Altre risposte di base
+    else if (lowerMsg === "ciao" || lowerMsg === "buongiorno") {
+        nonUnderstoodCount = 0;
+        trackClick("Greeting", "Interaction", 0);
+        return translations.greeting;
+    } else if (lowerMsg === "grazie" || lowerMsg === "ti ringrazio" || lowerMsg === "molto gentile" || lowerMsg === "grazie mille") {
+        nonUnderstoodCount = 0;
+        trackClick("Thanks", "Interaction", 0);
+        return translations.thanks;
+    } else if (["è grave", "grave", "è molto grave"].includes(lowerMsg)) {
+        nonUnderstoodCount = 0;
+        trackClick("Serious", "Interaction", 0);
+        return translations.grave;
+    } else if (["d'accordo", "va bene", "ok"].includes(lowerMsg)) {
+        nonUnderstoodCount = 0;
+        return translations.agree;
+    } 
+    // Ricerca nella base di conoscenza
+    else {
+        const matchedItem = findBestMatch(userMsg);
+        if (matchedItem) {
+            nonUnderstoodCount = 0;
+            trackClick("ResponseGiven", "Interaction", 0);
+            return matchedItem.fullAnswer;
+        } else {
+            nonUnderstoodCount++;
+            trackClick("NotUnderstood", "Interaction", nonUnderstoodCount);
+            if (nonUnderstoodCount < 3) return translations.notUnderstood;
+            nonUnderstoodCount = 0;
+            return translations.notUnderstoodAfter;
+        }
+    }
+}
+
+// Raccolta del contenuto del sito al caricamento
+const siteContent = [];
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll('h1, h2, h3, p, li').forEach(element => {
+        const text = element.textContent.trim().toLowerCase();
+        if (text) siteContent.push({ text: cleanInput(text), raw: element.textContent });
+    });
+    document.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
+        try {
+            const data = JSON.parse(script.textContent);
+            if (data['@type'] === 'FAQPage' && data.mainEntity) {
+                data.mainEntity.forEach(item => {
+                    const question = item.name.toLowerCase().trim();
+                    const answer = item.acceptedAnswer.text.trim();
+                    if (question && answer) siteContent.push({ text: cleanInput(question), raw: answer });
+                });
+            }
+        } catch (e) {
+            console.error("Errore parsing JSON-LD:", e);
+        }
+    });
+});
+
+function getResponseFromSite(userMsg, callback) {
+    const matchedItem = findBestMatch(userMsg);
+    if (matchedItem) {
+        callback(matchedItem.fullAnswer);
+    } else {
+        const userWords = cleanInput(userMsg);
+        let bestMatch = null, maxScore = 0;
+
+        siteContent.forEach(item => {
+            let score = 0;
+            userWords.forEach(userWord => {
+                item.text.forEach(siteWord => {
+                    const distance = levenshteinDistance(userWord, siteWord);
+                    const similarity = 1 - distance / Math.max(userWord.length, siteWord.length);
+                    if (similarity >= 0.6) {
+                        score += similarity;
+                    }
+                });
+            });
+            if (score > maxScore) {
+                maxScore = score;
+                bestMatch = item.raw;
+            }
+        });
+
+        if (maxScore > 0 && bestMatch) {
+            callback(bestMatch);
+        } else {
+            callback(getResponse(userMsg));
+        }
+    }
+}
+
+function simulateTyping(callback) {
+    const typingMessage = document.createElement("p");
+    typingMessage.className = "bot-message";
+    typingMessage.textContent = "...";
+    chatMessages.appendChild(typingMessage);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    setTimeout(() => {
+        chatMessages.removeChild(typingMessage);
+        callback();
+    }, conversationHistory.length > 2 ? 1000 : 800);
+}
+
+function addMessage(txt, cls) {
+    const p = document.createElement("p");
+    p.className = cls;
+    p.textContent = txt;
+    chatMessages.appendChild(p);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    if (cls === "bot-message" && voiceEnabled) speak(txt);
+}
+
+// Gestione dello spostamento
+let isDragging = false, currentX = 0, currentY = 0, initialX, initialY;
+const dragHandle = document.getElementById("chat-bubble");
+const chatContainer = document.getElementById("chat-container");
+const chatBox = document.getElementById("chat-box");
+const chatMessages = document.getElementById("chat-messages");
+
+dragHandle.addEventListener("mousedown", startDragging);
+dragHandle.addEventListener("touchstart", startDragging, { passive: false });
+document.addEventListener("mousemove", drag);
+document.addEventListener("mouseup", stopDragging);
+document.addEventListener("touchmove", drag, { passive: false });
+document.addEventListener("touchend", stopDragging);
+
+function startDragging(e) {
+    isDragging = true;
+    if (e.type === "mousedown") {
+        initialX = e.clientX - currentX;
+        initialY = e.clientY - currentY;
+    } else if (e.type === "touchstart") {
+        initialX = e.touches[0].clientX - currentX;
+        initialY = e.touches[0].clientY - currentY;
+    }
+}
+
+function drag(e) {
+    if (!isDragging) return;
+    e.preventDefault();
+    let newX = e.type === "mousemove" ? e.clientX - initialX : e.touches[0].clientX - initialX;
+    let newY = e.type === "mousemove" ? e.clientY - initialY : e.touches[0].clientY - initialY;
+    const rect = chatContainer.getBoundingClientRect();
+    const maxX = window.innerWidth - rect.width;
+    const maxY = window.innerHeight - rect.height;
+    currentX = Math.max(0, Math.min(newX, maxX));
+    currentY = Math.max(0, Math.min(newY, maxY));
+    chatContainer.style.left = `${currentX}px`;
+    chatContainer.style.top = `${currentY}px`;
+}
+
+function stopDragging() {
+    isDragging = false;
+}
+
+window.addEventListener('load', () => {
+    const rect = chatContainer.getBoundingClientRect();
+    currentX = window.innerWidth - rect.width - 20;
+    currentY = window.innerHeight - rect.height - 20;
+    chatContainer.style.left = `${currentX}px`;
+    chatContainer.style.top = `${currentY}px`;
+});
+
+function adjustChatContainerPosition() {
+    const rect = chatContainer.getBoundingClientRect();
+    const maxX = window.innerWidth - rect.width;
+    const maxY = window.innerHeight - rect.height;
+    currentX = Math.min(currentX, maxX);
+    currentX = Math.max(0, currentX);
+    currentY = Math.min(currentY, maxY);
+    currentY = Math.max(0, currentY);
+    chatContainer.style.left = `${currentX}px`;
+    chatContainer.style.top = `${currentY}px`;
+}
+
+window.addEventListener('resize', adjustChatContainerPosition);
+
+const chatToggle = document.getElementById("chat-toggle");
+const chatForm = document.getElementById("chat-form");
+const chatInput = document.getElementById("chat-input");
+let firstOpen = true;
+
+chatToggle.addEventListener("click", () => {
+    const isHidden = !chatBox.classList.contains("visible");
+    if (isHidden) {
+        chatContainer.style.width = "300px";
+        chatBox.classList.add("visible");
+        chatToggle.setAttribute("aria-expanded", "true");
+        trackClick("ChatOpen", "Interaction", 0);
+        if (!chatMessages.children.length) addMessage(translations.greeting, "bot-message");
+        adjustChatContainerPosition();
+        setTimeout(() => chatInput.focus(), 300);
+        if (firstOpen && ("SpeechRecognition" in window || "webkitSpeechRecognition" in window) && recognition) {
+            recognition.start();
+            firstOpen = false;
+        }
+    } else {
+        chatBox.classList.remove("visible");
+        chatToggle.setAttribute("aria-expanded", "false");
+        trackClick("ChatClose", "Interaction", 0);
+        chatContainer.style.width = "auto";
+        chatContainer.style.height = "auto";
+        adjustChatContainerPosition();
+    }
+});
+
+chatForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const userMsg = chatInput.value.trim();
+    if (!userMsg) return;
+    addMessage(userMsg, "user-message");
+    trackClick("ChatMessage", "Interaction", 0);
+    chatInput.value = "";
+    simulateTyping(() => {
+        getResponseFromSite(userMsg, (answer) => {
+            addMessage(answer, "bot-message");
+        });
+    });
+});
+
+let voiceEnabled = true;
+
+function speak(text) {
+    if (!voiceEnabled || !("speechSynthesis" in window)) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "it-IT";
+    utterance.pitch = 0.5;
+    utterance.rate = 1.1;
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length > 0) {
+        const maleVoice = voices.find(v => v.name.toLowerCase().includes("male") || v.name.toLowerCase().includes("italiano"));
+        if (maleVoice) utterance.voice = maleVoice;
+    }
+    window.speechSynthesis.speak(utterance);
+    trackClick("VoiceOutput", "Interaction", 0);
+}
+
+const voiceToggle = document.getElementById("voice-toggle");
+voiceToggle.addEventListener("click", () => {
+    voiceEnabled = !voiceEnabled;
+    voiceToggle.classList.toggle("disabled", !voiceEnabled);
+    trackClick(voiceEnabled ? "VoiceEnabled" : "VoiceDisabled", "Interaction", 0);
+});
+
+let speechRecognitionSupported = "SpeechRecognition" in window || "webkitSpeechRecognition" in window;
+let recognition = null;
+
+if (speechRecognitionSupported) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.lang = "it-IT";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        addMessage(transcript, "user-message");
+        trackClick("VoiceInput", "Interaction", 0);
+        simulateTyping(() => {
+            getResponseFromSite(transcript, (answer) => {
+                addMessage(answer, "bot-message");
+            });
+        });
+    };
+    recognition.onend = () => trackClick("VoiceStop", "Interaction", 0);
+    recognition.onerror = (event) => trackClick("VoiceError", "Interaction", event.error);
+}
+
+if (!("speechSynthesis" in window)) voiceToggle.style.display = "none";
+</script>
+
+<script nonce="xai-48273">
+    document.addEventListener("DOMContentLoaded",function(){document.querySelectorAll("#current-year,#current-year-footer").forEach(e=>e.textContent=new Date().getFullYear());function addToFavorites(e){const t=e.querySelector(".favorite-text");t.innerHTML="⭐ Aggiunto!",t.style.color="#FFD700",e.setAttribute("aria-pressed","true"),/iPhone|iPad|iPod/i.test(navigator.userAgent)?alert("Condividi > Aggiungi alla schermata Home"):/Android/i.test(navigator.userAgent)?alert("Menu (⋮) > Aggiungi alla schermata Home"):alert("Ctrl + D o Cmd + D");trackClick("Aggiungi Preferiti","Interaction",0);}function trackClick(e,t="CTA",n=null){typeof gtag==="function"?gtag("event","click",{"event_category":t,"event_label":e,"value":n}):console.log("gtag non disponibile:",e,t,n);}const t=document.querySelectorAll(".favorite-button");t.forEach(e=>e.addEventListener("click",()=>addToFavorites(e)));const n=document.querySelectorAll(".carousel blockquote");let a=0;n[0].classList.add("active"),setInterval(()=>{n.forEach(e=>e.classList.remove("active")),n[a].classList.add("active"),a=(a+1)%n.length},4e3);});
+  </script>
+
+  <script nonce="xai-48273">
+  document.addEventListener("DOMContentLoaded", () => {
+    const sections = document.querySelectorAll("section");
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    sections.forEach(section => observer.observe(section));
+  });
+</script>
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Carica Google Tag Manager (GTM) dopo il caricamento iniziale
+    var gtmScript = document.createElement("script");
+    gtmScript.src = "https://www.googletagmanager.com/gtm.js?id=GTM-XXXXXX";
+    gtmScript.async = true;
+    document.head.appendChild(gtmScript);
+
+    // Inizializzazione del dataLayer prima di GTM
+    window.dataLayer = window.dataLayer || [];
+    
+    function gtag() { dataLayer.push(arguments); }
+
+    // Carica Google Analytics (GA4) solo se l'utente interagisce
+    function loadGA() {
+        if (!window.gaLoaded) {
+            var gaScript = document.createElement("script");
+            gaScript.src = "https://www.googletagmanager.com/gtag/js?id=G-2RSFE6WL4M";
+            gaScript.async = true;
+            document.head.appendChild(gaScript);
+            
+            gtag('js', new Date());
+            gtag('config', 'G-2RSFE6WL4M', { 'anonymize_ip': true, 'send_page_view': false });
+
+            window.gaLoaded = true;
+        }
+    }
+
+    // Carica Google Ads solo se l'utente scorre la pagina
+    function loadGoogleAds() {
+        if (!window.adsLoaded) {
+            var adsScript = document.createElement("script");
+            adsScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
+            adsScript.async = true;
+            document.body.appendChild(adsScript);
+            window.adsLoaded = true;
+        }
+    }
+
+    // Eventi utente per caricare GA e Google Ads
+    document.addEventListener("mousemove", loadGA, { once: true });
+    document.addEventListener("scroll", loadGoogleAds, { once: true });
+});
+</script>
+  
+</body>
+</html>
   
