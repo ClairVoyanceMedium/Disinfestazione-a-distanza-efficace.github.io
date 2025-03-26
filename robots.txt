@@ -1,42 +1,100 @@
-# Indique aux robots que toutes les pages peuvent être explorées, sauf restrictions spécifiées
+# Robots.txt ottimizzato per il 2025 - Supera l’eccellenza
+# Progettato per il pubblico italofono, IA, Google IA, assistenti vocali e SEO avanzato
+# Sito: https://clairvoyancemedium.github.io/Disinfestazione-a-Distanza-Efficace-Italia-Spagna.github.io/
+# Ultimo aggiornamento: 27/03/2025 14:00 GMT
+# Nota: Testare con Google Search Console e robotstxt.org per la validazione
+
+##########################
+# Autorizzazione Generale #
+##########################
 User-agent: *
-Disallow: /admin/
-Disallow: /tmp/
-Disallow: /private/
+Disallow: /privato/          # Directory private (es. admin, script)
+Disallow: /temp/             # Cartelle temporanee
+Disallow: /*?*               # Evita contenuti duplicati (parametri URL)
+Allow: /*.css$               # CSS per un rendering ottimale (ereditato da tutti)
+Allow: /*.js$                # JS essenziale (ereditato da tutti)
+Allow: /*.pdf$               # Autorizza PDF strategici (es. guide)
+Allow: /                     # Autorizzazione predefinita
 
-# Bloquer des URL avec paramètres inutiles pour l'indexation
-Disallow: /*?debug=true
-Disallow: /*?preview=true
-
-# Permettre les fichiers nécessaires au bon affichage et fonctionnement
-Allow: /css/
-Allow: /js/
-Allow: /images/
-
-# Référencement des ressources multimédias
-Allow: *.png
-Allow: *.jpg
-Allow: *.webp
-Allow: *.css
-Allow: *.js
-
-# Fournir le chemin du fichier sitemap pour une meilleure indexation
-Sitemap: https://www.clairvoyancemedium.com/sitemap.xml
-
-# Autorisation pour les robots Google et Bing pour maximiser les campagnes publicitaires
+########################################
+# Googlebot (incluso Google IA 2025)   #
+########################################
 User-agent: Googlebot
-Allow: /
-User-agent: AdsBot-Google
-Allow: /
+Disallow: /privato/
+Disallow: /temp/
+Allow: /rituali/
+Allow: /protezione/
+Allow: /disinfestazione/
+
+###########################################
+# Assistenti vocali                       #
+###########################################
+User-agent: Googlebot-Voice
+Disallow: /privato/
+Disallow: /temp/
+Allow: /faq/
+Allow: /rituali-semplici/
+Allow: /consigli/
+User-agent: Amazonbot        # Ipotetico per Alexa
+Disallow: /privato/
+Disallow: /temp/
+Allow: /faq/
+Allow: /consigli/
+User-agent: Applebot         # Ipotetico per Siri
+Disallow: /privato/
+Disallow: /temp/
+Allow: /faq/
+Allow: /consigli/
+
+###########################################
+# Bing (italofonia oltre Google)          #
+###########################################
 User-agent: Bingbot
-Allow: /
+Disallow: /privato/
+Disallow: /temp/
 
-# Bloquer les robots nuisibles ou non désirés
-User-agent: BadBot
+#################################
+# Blocco dei robot indesiderati #
+#################################
+User-agent: AhrefsBot
 Disallow: /
-User-agent: EvilScraper
+User-agent: SemrushBot
+Disallow: /
+User-agent: MJ12bot
 Disallow: /
 
-# Empêcher l'exploration des fichiers sensibles
-Disallow: /config/
-Disallow: /backup/
+##################################################
+# Partner e analizzatori Google                  #
+##################################################
+User-agent: Mediapartners-Google
+Disallow: /privato/
+User-agent: AdsBot-Google
+Disallow: /privato/
+
+##################################################
+# Crawler IA emergenti (anticipazione 2025)     #
+##################################################
+User-agent: xAI-Crawler
+Disallow: /privato/
+User-agent: OpenAI-Crawler
+Disallow: /privato/
+User-agent: AnthropicBot
+Disallow: /privato/
+User-agent: Qwantify         # Italofonia
+Disallow: /privato/
+
+##################################################
+# Ottimizzazione avanzata (mobile-first)         #
+##################################################
+User-agent: Googlebot-Mobile
+Disallow: /privato/
+Disallow: /temp/
+Allow: /rituali/
+Allow: /protezione/
+Allow: /disinfestazione/
+
+##################
+# Sitemap e crawl #
+##################
+Sitemap: https://clairvoyancemedium.github.io/Disinfestazione-a-Distanza-Efficace-Italia-Spagna.github.io/sitemap.xml
+Crawl-delay: 0.5
