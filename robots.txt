@@ -1,6 +1,6 @@
-# Robots.txt ottimizzato per il 2025 - Supera l’eccellenza
-# Progettato per il pubblico italofono, IA, Google IA, assistenti vocali e SEO avanzato
-# Sito: https://clairvoyancemedium.github.io/Disinfestazione-a-Distanza-Efficace-Italia-Spagna.github.io/
+# Robots.txt ottimizzato per il 2025 - Il migliore in assoluto
+# Progettato per l’Italia, IA, Google IA, assistenti vocali e SEO avanzato
+# Sito: https://clairvoyancemedium.github.io/Disinfestazione-a-Distanza-Efficace-Italia.github.io/
 # Ultimo aggiornamento: 27/03/2025 14:00 GMT
 # Nota: Testare con Google Search Console e robotstxt.org per la validazione
 
@@ -47,7 +47,7 @@ Allow: /faq/
 Allow: /consigli/
 
 ###########################################
-# Bing (italofonia oltre Google)          #
+# Bing (mercato italofono)                #
 ###########################################
 User-agent: Bingbot
 Disallow: /privato/
@@ -96,5 +96,5 @@ Allow: /disinfestazione/
 ##################
 # Sitemap e crawl #
 ##################
-Sitemap: https://clairvoyancemedium.github.io/Disinfestazione-a-Distanza-Efficace-Italia-Spagna.github.io/sitemap.xml
+Sitemap: https://clairvoyancemedium.github.io/Disinfestazione-a-Distanza-Efficace-Italia.github.io/sitemap.xml
 Crawl-delay: 0.5
