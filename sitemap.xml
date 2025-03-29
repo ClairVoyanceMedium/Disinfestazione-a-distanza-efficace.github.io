@@ -1,64 +1,122 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <!-- Pagina principale -->
-    <url>
-        <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-Distanza-Efficace-Italia.github.io/</loc>
-        <lastmod>2025-03-27</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>1.0</priority>
-    </url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 
-    <!-- Sezione Rituali -->
-    <url>
-        <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-Distanza-Efficace-Italia.github.io/rituali/</loc>
-        <lastmod>2025-03-27</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-Distanza-Efficace-Italia.github.io/rituali-semplici/</loc>
-        <lastmod>2025-03-27</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
+  <!-- Pagina principale (Page principale) -->
+  <url>
+    <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-distanza-efficace.github.io/</loc>
+    <lastmod>2025-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://i.imgur.com/GmyGlKk.webp</image:loc>
+      <image:title>Logo del Rituale di Disinfestazione e Protezione</image:title>
+      <image:caption>Immagine rappresentativa del servizio di disinfestazione efficace a distanza</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://i.imgur.com/KBYqPcf.webp</image:loc>
+      <image:title>Rituale Divino di Disinfestazione</image:title>
+      <image:caption>Illustrazione del potente rituale di Frederick per la liberazione spirituale</image:caption>
+    </image:image>
+  </url>
 
-    <!-- Sezione Protezione -->
-    <url>
-        <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-Distanza-Efficace-Italia.github.io/protezione/</loc>
-        <lastmod>2025-03-27</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
+  <!-- Sezione: Importanza della Disinfestazione (Importance du désenvoûtement) -->
+  <url>
+    <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-distanza-efficace.github.io/#importanza-disinfestazione</loc>
+    <lastmod>2025-03-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
 
-    <!-- Sezione Disinfestazione -->
-    <url>
-        <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-Distanza-Efficace-Italia.github.io/disinfestazione/</loc>
-        <lastmod>2025-03-27</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
+  <!-- Sezione: Perché Invocare un Rituale (Pourquoi invoquer un rituel) -->
+  <url>
+    <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-distanza-efficace.github.io/#perche-invocare-rituale</loc>
+    <lastmod>2025-03-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
 
-    <!-- Sezione FAQ -->
-    <url>
-        <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-Distanza-Efficace-Italia.github.io/faq/</loc>
-        <lastmod>2025-03-27</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
+  <!-- Sezione: Benefici (Bénéfices) -->
+  <url>
+    <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-distanza-efficace.github.io/#benefici</loc>
+    <lastmod>2025-03-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
-    <!-- Sezione Consigli -->
-    <url>
-        <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-Distanza-Efficace-Italia.github.io/consigli/</loc>
-        <lastmod>2025-03-27</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
+  <!-- Sezione: Rilevazione di Malefici (Détection de sortilège) -->
+  <url>
+    <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-distanza-efficace.github.io/#rilevazione-malefici</loc>
+    <lastmod>2025-03-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
-    <!-- Esempio di PDF strategico -->
-    <url>
-        <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-Distanza-Efficace-Italia.github.io/guides/guida-disinfestazione-2025.pdf</loc>
-        <lastmod>2025-03-27</lastmod>
-        <changefreq>yearly</changefreq>
-        <priority>0.7</priority>
-    </url>
+  <!-- Sezione: Frederick -->
+  <url>
+    <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-distanza-efficace.github.io/#frederick</loc>
+    <lastmod>2025-03-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Sezione: Divinazione via Email (Voyance par email) -->
+  <url>
+    <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-distanza-efficace.github.io/#divinazione-via-email</loc>
+    <lastmod>2025-03-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Sezione: Testimonianze (Avis/Témoignages) -->
+  <url>
+    <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-distanza-efficace.github.io/#testimonianze</loc>
+    <lastmod>2025-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Sezione: Procedura (Procédure) -->
+  <url>
+    <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-distanza-efficace.github.io/#procedura</loc>
+    <lastmod>2025-03-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Risorse Statiche (Ressources statiques) -->
+  <url>
+    <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-distanza-efficace.github.io/favicon_optimized.png</loc>
+    <lastmod>2025-03-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <image:image>
+      <image:loc>https://clairvoyancemedium.github.io/Disinfestazione-a-distanza-efficace.github.io/favicon_optimized.png</image:loc>
+      <image:title>Favicon di ClairvoyanceMedium</image:title>
+      <image:caption>Icona ufficiale del sito leader per la disinfestazione a distanza</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://clairvoyancemedium.github.io/Disinfestazione-a-distanza-efficace.github.io/manifest.json</loc>
+    <lastmod>2025-03-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <!-- Risorse Aggiuntive (Ressources additionnelles - polices critiques) -->
+  <url>
+    <loc>https://clairvoyancemedium.github.io/Consultation_de_voyance_par_email_pas_chere.github.io/Cinzel-Regular.woff2</loc>
+    <lastmod>2025-03-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+
+  <url>
+    <loc>https://clairvoyancemedium.github.io/Consultation_de_voyance_par_email_pas_chere.github.io/PlayfairDisplay-Regular.woff2</loc>
+    <lastmod>2025-03-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+
 </urlset>
